@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const auth = (req, res, next) => {
@@ -13,7 +14,13 @@ const auth = (req, res, next) => {
 };
 
 const adminAuth = (req, res, next) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ msg: 'Access denied' });
+  //
+  if(!req.user) {
+    return res.status(401).json({ msg: 'Authorization denied' });
+  }
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ msg: 'Access denied' });
+  }
   next();
 };
 

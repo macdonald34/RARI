@@ -1,12 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { getMembers, getMember, createMember, updateMember, deleteMember } = require('../controllers/membersController');
 const { auth, adminAuth } = require('../middleware/auth');
+const memberController = require('../controllers/memberController');
 
-router.get('/', auth, getMembers);
-router.get('/:id', auth, getMember);
-router.post('/', auth, adminAuth, createMember);
-router.put('/:id', auth, adminAuth, updateMember);
-router.delete('/:id', auth, adminAuth, deleteMember);
+// Debug: Check if controller functions exist
+console.log('Member controller functions:', Object.keys(memberController));
+
+// Public routes (if any)
+// router.get('/public', ...);
+
+// Protected routes - all member routes require authentication
+router.get('/', auth, memberController.getMembers);
+router.get('/:id', auth, memberController.getMember);
+router.post('/', auth, adminAuth, memberController.createMember); // Only admin can create
+router.put('/:id', auth, adminAuth, memberController.updateMember); // Only admin can update
+router.delete('/:id', auth, adminAuth, memberController.deleteMember); // Only admin can delete
 
 module.exports = router;

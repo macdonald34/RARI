@@ -1,12 +1,21 @@
+// models/Member.js
 const mongoose = require('mongoose');
 
 const MemberSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  phone: String,
-  email: String,
-  gender: { type: String, enum: ['male', 'female', 'other'] },
-  role: { type: String, default: 'member' }, // e.g., pastor, elder, member
-  joinDate: { type: Date, default: Date.now }
+  name: { 
+    type: String, 
+    required: true 
+  },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  phone: { 
+    type: String 
+  }
+}, { 
+  timestamps: true 
 });
 
 module.exports = mongoose.model('Member', MemberSchema);

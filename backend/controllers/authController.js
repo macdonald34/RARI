@@ -1,8 +1,11 @@
+// controllers/authController.js
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Member = require('../models/Member');
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
   const { username, password } = req.body;
   try {
     let user = await User.findOne({ username });
@@ -12,14 +15,16 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
     const payload = { user: { id: user.id, role: user.role } };
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
-      if (err) throw err;
+      if (err) return res.status(500).json({ msg: 'Error signing token' });
       res.json({ token });
     });
   } catch (err) {
+    console.error(err);
     res.status(500).send('Server error');
   }
 };
-exports.signup = async (req, res) => {
+
+const signup = async (req, res) => {
   const { username, password, name, email, phone } = req.body;
   try {
     let user = await User.findOne({ username });
@@ -37,40 +42,44 @@ exports.signup = async (req, res) => {
 
     res.json({ msg: 'User registered successfully' });
   } catch (err) {
+    console.error(err);
     res.status(500).send('Server error');
   }
 };
 
-exports.approveUser = async (req, res) => {
+const approveUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { status: 'approved' }, { new: true });
     if (!user) return res.status(404).json({ msg: 'User not found' });
     res.json({ msg: 'User approved' });
   } catch (err) {
+    console.error(err);
     res.status(500).send('Server error');
   }
 };
 
-exports.rejectUser = async (req, res) => {
+const rejectUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { status: 'rejected' }, { new: true });
     if (!user) return res.status(404).json({ msg: 'User not found' });
     res.json({ msg: 'User rejected' });
   } catch (err) {
+    console.error(err);
     res.status(500).send('Server error');
   }
 };
 
-exports.getPendingUsers = async (req, res) => {
+const getPendingUsers = async (req, res) => {
   try {
     const users = await User.find({ status: 'pending' }).populate('memberId');
     res.json(users);
   } catch (err) {
+    console.error(err);
     res.status(500).send('Server error');
   }
 };
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
   const { username, password, role, memberId } = req.body;
   try {
     let user = await User.findOne({ username });
@@ -81,6 +90,17 @@ exports.register = async (req, res) => {
     await user.save();
     res.json({ msg: 'User registered' });
   } catch (err) {
+    console.error(err);
     res.status(500).send('Server error');
   }
+};
+
+// MAKE SURE ALL FUNCTIONS ARE EXPORTED
+module.exports = { 
+  login, 
+  signup, 
+  register, 
+  approveUser, 
+  rejectUser, 
+  getPendingUsers 
 };

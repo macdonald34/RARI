@@ -1,17 +1,118 @@
 .App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: #252525;
+  color: #fff;
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.header-button {
+  color: #fff;
+  background: transparent;
+  border: 1px solid #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.header-button-primary {
+  background: #4f90ff;
+  border-color: #4f90ff;
+}
+
+.site-main {
+  flex: 1;
+  padding: 40px 20px;
+}
+
+.home-page {
+  max-width: 760px;
+  margin: 0 auto;
   text-align: center;
+}
+
+.home-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.home-page p {
+  font-size: 1.05rem;
+  margin-bottom: 28px;
+  color: #333;
+}
+
+.home-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.primary-button,
+.secondary-button,
+button {
+  display: inline-block;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+.primary-button,
+button[type="submit"] {
+  background: #4f90ff;
+}
+
+.secondary-button {
+  background: #777;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  max-width: 300px;
-  margin: 0 auto;
+  max-width: 360px;
+  margin: 20px auto;
 }
 
-input, select, button {
+input,
+select,
+button {
   margin: 10px 0;
   padding: 10px;
+}
+
+input,
+select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  border-radius: 6px;
+  background: #4f90ff;
+  color: #fff;
 }
 
 ul {
