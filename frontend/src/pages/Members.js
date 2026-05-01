@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react'; // Add useMemo import
 import axios from 'axios';
 
 const Members = () => {
   const [members, setMembers] = useState([]);
   const [form, setForm] = useState({ name: '', phone: '', email: '', gender: '', role: '' });
   const token = localStorage.getItem('token');
-  const config = { headers: { 'x-auth-token': token } };
+  
+  // Wrap config in useMemo to prevent recreation on every render
+  const config = useMemo(() => ({ 
+    headers: { 'x-auth-token': token } 
+  }), [token]); // Recreate only when token changes
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -16,8 +20,8 @@ const Members = () => {
         console.error(err);
       }
     };
-    fetchMembers();
-  }, []);
+    fetchMembers(); // Remove config parameter here - it's not needed
+  }, [config]); // config is now stable
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 

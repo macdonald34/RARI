@@ -27,8 +27,8 @@ const Dashboard = () => {
         console.error(err);
       }
     };
-    fetchData();
-  }, []);
+    fetchData(config);
+  }, [config]);
 
   const approveUser = async (id) => {
     try {

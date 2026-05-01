@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react'; // Add useMemo
 import axios from 'axios';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [form, setForm] = useState({ title: '', date: '', location: '', description: '' });
   const token = localStorage.getItem('token');
-  const config = { headers: { 'x-auth-token': token } };
+  
+  // Wrap config in useMemo to prevent recreation on every render
+  const config = useMemo(() => ({ 
+    headers: { 'x-auth-token': token } 
+  }), [token]); // Recreate only when token changes
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -17,7 +21,7 @@ const Events = () => {
       }
     };
     fetchEvents();
-  }, []);
+  }, [config]); // Now this won't cause infinite re-renders
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 

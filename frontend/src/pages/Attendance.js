@@ -22,8 +22,8 @@ const Attendance = () => {
         console.error(err);
       }
     };
-    fetchData();
-  }, []);
+    fetchData(config);
+  }, [config]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
