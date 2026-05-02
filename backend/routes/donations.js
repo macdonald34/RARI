@@ -1,9 +1,11 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
-const { getDonations, createDonation } = require('../controllers/donationsController');
+const { getDonations, createDonation, updateDonation, deleteDonation } = require('../controllers/donationsController');
 const { auth, adminAuth } = require('../middleware/auth');
 
 router.get('/', auth, getDonations);
-router.post('/', auth, adminAuth, createDonation);
+router.post('/', auth, createDonation);
+router.put('/:id', auth, adminAuth, updateDonation);
+router.delete('/:id', auth, adminAuth, deleteDonation);
 
 module.exports = router;

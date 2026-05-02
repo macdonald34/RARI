@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -10,51 +10,39 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB connection error:', err));
+const MONGODB_URI = process.env.MONGODB_URI;
+console.log('MongoDB URI:', MONGODB_URI ? '✓ Defined' : '✗ Undefined');
 
-// Routes with error handling
-try {
-  console.log('Loading auth routes...');
-  app.use('/api/auth', require('./routes/auth'));
-  console.log('✓ Auth routes loaded');
-} catch (err) {
-  console.error('✗ Error loading auth routes:', err.message);
+if (!MONGODB_URI) {
+  console.error('❌ MONGODB_URI is not defined in environment variables');
+  process.exit(1);
 }
 
-try {
-  console.log('Loading members routes...');
-  app.use('/api/members', require('./routes/members'));
-  console.log('✓ Members routes loaded');
-} catch (err) {
-  console.error('✗ Error loading members routes:', err.message);
-}
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('✅ MongoDB connected successfully'))
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
 
-try {
-  console.log('Loading events routes...');
-  app.use('/api/events', require('./routes/events'));
-  console.log('✓ Events routes loaded');
-} catch (err) {
-  console.error('✗ Error loading events routes:', err.message);
-}
+const authRoutes = require('./routes/auth');
+const membersRoutes = require('./routes/members');
+const eventsRoutes = require('./routes/events');
+const donationsRoutes = require('./routes/donations');
+const attendanceRoutes = require('./routes/attendance');
 
-try {
-  console.log('Loading donations routes...');
-  app.use('/api/donations', require('./routes/donations'));
-  console.log('✓ Donations routes loaded');
-} catch (err) {
-  console.error('✗ Error loading donations routes:', err.message);
-}
+app.use('/api/auth', authRoutes);
+app.use('/api/members', membersRoutes);
+app.use('/api/events', eventsRoutes);
+app.use('/api/donations', donationsRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
-try {
-  console.log('Loading attendance routes...');
-  app.use('/api/attendance', require('./routes/attendance'));
-  console.log('✓ Attendance routes loaded');
-} catch (err) {
-  console.error('✗ Error loading attendance routes:', err.message);
-}
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+});
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`\n✅ Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`\n✅ Server running on port ${PORT}`);
+});
